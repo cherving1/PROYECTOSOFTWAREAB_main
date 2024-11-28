@@ -1,0 +1,41 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+use App\Models\User;
+use App\Models\Proyecto;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class UserProjectIntegrationTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function testUserCanCreateProject()
+    {
+        // Crear un usuario
+        $user = User::factory()->create();
+
+        // Autenticarse como el usuario creado
+        $this->actingAs($user);
+
+        // Crear un proyecto asociado al usuario
+        $response = $this->post('/proyectos', [
+            'nombreProyecto' => 'Nuevo Proyecto',
+            'descripcionProyecto' => 'Descripción del proyecto',
+            'responsable' => $user->name,
+            'fechaInicio' => '2024-12-01',
+            'fechaFin' => '2024-12-31',
+        ]);
+
+        // Verificar redirección después de la creación
+        $response->assertRedirect('/proyectos');
+
+        // Verificar que el proyecto se haya creado en la base de datos
+        $this->assertDatabaseHas('proyectos', [
+            'nombreProyecto' => 'Nuevo Proyecto',
+            'descripcionProyecto' => 'Descripción del proyecto',
+            'responsable' => $user->name,
+        ]);
+    }
+}

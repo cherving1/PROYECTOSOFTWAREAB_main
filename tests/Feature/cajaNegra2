@@ -1,0 +1,56 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+# Configuración del driver (asegúrate de tener el driver adecuado para tu navegador)
+driver = webdriver.Chrome()  # Usa el driver adecuado si usas otro navegador
+
+# URL del sitio donde se encuentra el formulario de login
+url = "http://localhost/proyectoSoftwareab/public/login"  # Reemplaza con la URL de la página de login
+driver.get(url)
+
+# Espera para asegurarse de que la página cargue
+time.sleep(2)
+
+# Función para registrar los clics y datos
+def registrar_actividad(campo, dato):
+    print(f"Clic en: {campo}")
+    print(f"Escribiendo: {dato}")
+
+# Paso 1: Completar el campo "Email"
+email = "juan.perez@dominio.com"
+campo_email = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.NAME, "email"))  # El nombre del campo es "email"
+)
+campo_email.click()
+registrar_actividad("Email", email)
+campo_email.send_keys(email)
+
+# Paso 2: Completar el campo "Contraseña"
+contraseña = "ContraseñaSegura123!"
+campo_contraseña = driver.find_element(By.NAME, "password")  # El nombre del campo es "password"
+campo_contraseña.click()
+registrar_actividad("Contraseña", contraseña)
+campo_contraseña.send_keys(contraseña)
+
+# Paso 3: Hacer clic en el botón de login
+boton_login = driver.find_element(By.XPATH, "//button[@type='submit']")  # Busca el botón de submit
+boton_login.click()
+registrar_actividad("Botón Login", "Hizo clic en Login")
+
+# Espera para observar la acción
+time.sleep(5)
+
+# Paso 4: Verificar si el login fue exitoso
+# Esto puede variar dependiendo del sitio web, aquí solo estamos observando si se redirige o si muestra un mensaje.
+try:
+    mensaje_exito = driver.find_element(By.CLASS_NAME, "mensaje_exito")  # Cambia esto según el mensaje de éxito
+    print("Inicio de sesión exitoso!")
+except:
+    print("Hubo un error al intentar iniciar sesión.")
+
+# Cerrar el navegador
+driver.quit()

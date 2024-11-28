@@ -1,0 +1,42 @@
+import os
+import subprocess
+import urllib.request
+import sys 
+
+def install_pip():
+    libraries = [
+        "selenium",  # Librería principal
+    ]
+    try:
+        # Verificar si pip está instalado
+        subprocess.run(["pip", "--version"], check=True)
+        print("Pip ya está instalado.")
+        for library in libraries:
+            print(f"Instalando {library}...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", library])
+        print("¡Todas las librerías se instalaron correctamente!")
+    except subprocess.CalledProcessError as e:
+        print(f"Error al instalar la librería: {e}")
+    except Exception as e:
+        print(f"Ha ocurrido un error inesperado: {e}")
+    except subprocess.CalledProcessError:
+        print("Pip no está instalado. Procediendo a instalarlo...")
+
+        # Descargar get-pip.py
+        url = "https://bootstrap.pypa.io/get-pip.py"
+        file_name = "get-pip.py"
+        print(f"Descargando {file_name} desde {url}...")
+        urllib.request.urlretrieve(url, file_name)
+
+        # Ejecutar get-pip.py para instalar pip
+        print("Instalando pip...")
+        subprocess.run(["python", file_name], check=True)
+
+        # Limpiar el archivo descargado
+        os.remove(file_name)
+        print("Pip se ha instalado correctamente.")
+        
+
+if __name__ == "__main__":
+    install_pip()
+    install_libraries()
